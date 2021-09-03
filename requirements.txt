@@ -1,0 +1,9 @@
+fastapi==0.68.1
+pydantic==1.8.2
+SQLAlchemy==1.4.23
+starlette
+sqlalchemy
+secrets
+bcrypt
+aiofiles
+openpyxl
