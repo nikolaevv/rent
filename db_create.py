@@ -10,11 +10,78 @@ models.Base.metadata.create_all(bind=engine)
 db_record = models.Business(
     email="starlei165@gmail.com",
     phone="1111",
-    debt=10000,
+    square=100,
+    debt=0,
+    rent_rate=100000.0,
+    stage=1,
+    terminal="B",
+    is_agreement_active=True,
+    #termination_time=datetime.datetime.now(),
+    signing_date=datetime.datetime.now(),
+    
+    TIN="111111111111111",
+    payment_time=datetime.datetime.now(),
+    title="McDonalds",
+    agreement="Вадим's Resume.pdf"
+)
+
+db.add(db_record)
+
+db_record = models.Business(
+    email="starlei111111@gmail.com",
+    phone="1111",
+    rent_rate=100000.0,
+    square=95,
+    stage=1,
+    terminal="B",
+    debt=30000,
     is_agreement_active=True,
     termination_time=datetime.datetime.now(),
+    signing_date=datetime.datetime.now(),
+    
     TIN="111111111111111",
-    title="Macdonalds",
+    payment_time=datetime.datetime.now(),
+    title="Кофемания",
+    agreement="Вадим's Resume.pdf"
+)
+
+db.add(db_record)
+
+db_record = models.Business(
+    email="starlei222222@gmail.com",
+    phone="1111",
+    debt=0,
+    square=40,
+    rent_rate=100000.0,
+    stage=1,
+    terminal="B",
+    is_agreement_active=True,
+    #termination_time=datetime.datetime.now(),
+    signing_date=datetime.datetime.now(),
+    
+    TIN="111111111111111",
+    payment_time=datetime.datetime.now(),
+    title="Duty Free",
+    agreement="Вадим's Resume.pdf"
+)
+
+db.add(db_record)
+
+db_record = models.Business(
+    email="starlei33333@gmail.com",
+    phone="1111",
+    debt=0,
+    square=120,
+    rent_rate=100000.0,
+    stage=2,
+    terminal="F",
+    is_agreement_active=True,
+    #termination_time=datetime.datetime.now(),
+    signing_date=datetime.datetime.now(),
+    
+    TIN="111111111111111",
+    payment_time=datetime.datetime.now(),
+    title="KFC",
     agreement="Вадим's Resume.pdf"
 )
 
