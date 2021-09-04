@@ -52,8 +52,7 @@ def authenticate(auth_item: schemas.AuthItem, db: Session = Depends(get_db)):
 @app.get("/api/users", response_model=List[schemas.User])
 def get_users(authorization: str = Header(None), db: Session = Depends(get_db)):
     requestor = authorize(authorization, db)
-    all_users = crud.get_users(db)
-    return all_users
+    return requestor
 
 @app.get("/api/businesses/{id}/messages", response_model=List[schemas.Message])
 def get_messages(id, db: Session = Depends(get_db)):

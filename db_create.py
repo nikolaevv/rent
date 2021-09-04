@@ -39,6 +39,15 @@ db_record = models.User(
 
 db.add(db_record)
 
+db_record = models.User(
+    login="arabic165@gmail.com",
+    password_hash="$2a$10$hCyWcJ302enjX4tEFd/m.uiLGLhFSMHe.X6EEjIR4pWoIYhZtwGi2",
+    access_token="111111111111111",
+    role="AIRPORT",
+)
+
+db.add(db_record)
+
 db_record = models.Message(
     timestamp=datetime.datetime.now(),
     text="Лови уведомление о расторжении контракта",
