@@ -49,9 +49,9 @@ def authorize(token: str, db: Session = Depends(get_db), role: str = 'ALL', id: 
 def authenticate(auth_item: schemas.AuthItem, db: Session = Depends(get_db)):
     return crud.authenticate(db, auth_item.login, auth_item.password)
 
-@app.get("/api/users", response_model=List[schemas.User])
+@app.get("/api/user", response_model=Optional[schemas.User])
 def get_users(authorization: str = Header(None), db: Session = Depends(get_db)):
-    requestor = authorize(authorization, db)
+    requestor = authorize(authorization, db, 'ALL')
     return requestor
 
 @app.get("/api/businesses/{id}/messages", response_model=List[schemas.Message])
