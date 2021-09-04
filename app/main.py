@@ -130,6 +130,16 @@ def confirm_payment(id, data: schemas.ConfirmPaymentItem, db: Session = Depends(
 def get_acceptable_share():
     return 0.85
 
+@app.get("/api/businesses/{id}/payments/withdraw", response_model={})
+def withdraw_summ(id, authorization: str = Header(None), db: Session = Depends(get_db)):
+    requestor = authorize(authorization, db, 'ALL', id)
+    business = crud.get_business_by_id(db, id)
+
+    if business.autopayment:
+        acceptable_share = get_acceptable_share()
+        # how much % business can withdraw
+        return {"result": business.locked_summ * acceptable_share}
+
 @app.post("/api/businesses/{id}/payments/withdraw", response_model={})
 def withdraw_payment(id, data: schemas.WithdrawRequest, authorization: str = Header(None), db: Session = Depends(get_db)):
     requestor = authorize(authorization, db, 'BUSINESS', id)
