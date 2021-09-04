@@ -64,6 +64,7 @@ def break_agreement(db: Session, business_id: int):
 def create_payment(db: Session, business_id, summ, tinkoff_id):
     timestamp = datetime.datetime.now()
     business = get_business_by_id(db, business_id)
+    
 
     if business:
         db_payment = models.Payment(business_id=business.id, tinkoff_id=tinkoff_id, summ=summ, timestamp=timestamp)
@@ -91,6 +92,7 @@ def add_autopayment_data(db: Session, business_id: id, rebill_id: int, card_id: 
     business = get_business_by_id(db, business_id)
     business.rebill_id = rebill_id
     business.card_id = card_id
+    business.autopayment = True
     db.commit()
 
 def increment_locked_summ(db: Session, business_id: id, summ: int):

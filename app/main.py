@@ -107,7 +107,8 @@ def create_payment(id, data: schemas.InitPaymentItem, authorization: str = Heade
     requestor = authorize(authorization, db, 'BUSINESS', id)
     result = init_first_payment(data.summ, id)
     print(result)
-    crud.create_payment(db, id, data.summ, result['id'])
+    crud.update_autopayment(db, id, data.summ, result['id'])
+    #crud.create_payment(db, id, data.summ, result['id'])
     return result
 
 @app.get("/api/payments", response_model=List[schemas.Payment])
@@ -120,7 +121,7 @@ def confirm_payment(id, data: schemas.ConfirmPaymentItem, db: Session = Depends(
     print(data)
     # 1. set payment to authorized
     payment = crud.authorize_payment(db, data.PaymentId)    
-    # 2. add card_id & rebill_id
+    # 2. add card_id & rebill_id & autopayment
     crud.add_autopayment_data(db, id, data.RebillId, data.CardId)
     # 3. Increment locked_summ
     crud.increment_locked_summ(db, id, payment.summ)

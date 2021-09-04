@@ -14,6 +14,8 @@ headers_base = {
     'Content-Type': 'application/json'
 }
 
+callback_base = 'http://c9b3-185-48-37-99.ngrok.io'
+
 def calc_amount(summ: float) -> int:
     return int(summ * 100)
 
@@ -57,7 +59,7 @@ def get_payment_status(id):
 
 def init_first_payment(summ, customer_key):
     amount = calc_amount(summ)
-    NOTIFICATION_URL = 'http://8736-185-48-37-99.ngrok.io/api/businesses/{}/payments/confirm'.format(customer_key)
+    NOTIFICATION_URL = '{}/api/businesses/{}/payments/confirm'.format(callback_base, customer_key)
 
     data = {
         'TerminalKey': TERMINAL_KEY,
@@ -91,7 +93,7 @@ def init_first_payment(summ, customer_key):
 
 def init_auto_payment(summ, customer_key):
     amount = calc_amount(summ)
-    NOTIFICATION_URL = 'http://8736-185-48-37-99.ngrok.io/api/businesses/{}/payments/confirm'.format(customer_key)
+    NOTIFICATION_URL = '{}/api/businesses/{}/payments/confirm'.format(callback_base, customer_key)
 
     data = {
         'TerminalKey': TERMINAL_KEY,
