@@ -77,6 +77,10 @@ def get_payment_by_id(db: Session, tinkoff_id: int):
     if payments.count() > 0:
         return payments.first()
 
+def get_payments_by_id(db: Session, business_id: int):
+    payments = db.query(models.Payment).filter(models.Payment.business_id == business_id)
+    return payments
+
 def authorize_payment(db: Session, tinkoff_id: int):
     payment = get_payment_by_id(db, tinkoff_id)
     payment.status = 'AUTHORIZED'

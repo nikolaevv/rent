@@ -9,6 +9,7 @@ from starlette.responses import RedirectResponse
 from . import models, schemas, crud
 from .tinkoff import init_first_payment, cancel_payment, perform_auto_payment, charge_auto_payment
 from .database import SessionLocal, engine
+from .reports import create_all_payments_report
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -73,8 +74,8 @@ def get_businesses(authorization: str = Header(None), db: Session = Depends(get_
 
 @app.get("/api/businesses/report")
 def get_payments_report(authorization: str = Header(None), db: Session = Depends(get_db)):
-    # get excel report about payments
-    pass
+    return {}
+
 
 @app.get("/api/businesses/{id}", response_model=schemas.Business)
 def get_business(id, authorization: str = Header(None), db: Session = Depends(get_db)):
@@ -97,8 +98,9 @@ def break_business_agreement(id, authorization: str = Header(None), db: Session 
 
 @app.get("/api/businesses/{id}/payments")
 def get_business_payments(id, authorization: str = Header(None), db: Session = Depends(get_db)):
-    # send excel file
-    pass
+    payments = crud.get_payments_by_id(db, id)
+    create_all_payments_report(payments)
+    return FileResponse('files/reports/report.xlsx')
 
 @app.post("/api/businesses/{id}/payments/init", response_model=schemas.InitPaymentResponse)
 def create_payment(id, data: schemas.InitPaymentItem, authorization: str = Header(None), db: Session = Depends(get_db)):
