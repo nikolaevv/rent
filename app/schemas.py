@@ -72,6 +72,9 @@ class InitPaymentResponse(BaseModel):
     id: int
     url: str
 
+class MessageSend(BaseModel):
+    text: str
+
 class UpdateWalletAdress(BaseModel):
     wallet_adress: str
 
