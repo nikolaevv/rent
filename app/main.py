@@ -61,9 +61,9 @@ def get_messages(id, db: Session = Depends(get_db)):
     return messages
 
 @app.post("/api/businesses/{id}/messages", response_model={})
-def send_message(id, authorization: str = Header(None), text: str = Form(...), file: Optional[UploadFile] = File(None), db: Session = Depends(get_db)):
+def send_message(id, data, authorization: str = Header(None), db: Session = Depends(get_db)):
     requestor = authorize(authorization, db)
-    messages = crud.send_message(db, id, requestor.role, text, file)
+    messages = crud.send_message(db, id, requestor.role, data.text)
     return {}
 
 @app.get("/api/businesses/", response_model=List[schemas.Business])
