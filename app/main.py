@@ -10,6 +10,8 @@ from . import models, schemas, crud
 from .tinkoff import init_first_payment, cancel_payment, perform_auto_payment, charge_auto_payment
 from .database import SessionLocal, engine
 from .reports import create_all_payments_report
+from .fin import create_wallet, deposit_money
+import smtplib
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -21,7 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,
-)
+) 
 
 # Dependency
 def get_db():
@@ -76,7 +78,6 @@ def get_businesses(authorization: str = Header(None), db: Session = Depends(get_
 def get_payments_report(authorization: str = Header(None), db: Session = Depends(get_db)):
     return {}
 
-
 @app.get("/api/businesses/{id}", response_model=schemas.Business)
 def get_business(id, authorization: str = Header(None), db: Session = Depends(get_db)):
     requestor = authorize(authorization, db, 'ALL', id)
@@ -89,11 +90,18 @@ async def get_business_agreement(id, authorization: str = Header(None), db: Sess
     if agreement_path:
         return FileResponse(agreement_path)
 
+def send_email(adress, text):
+    smtpObj = smtplib.SMTP('smtp.gmail.com', 587)
+    smtpObj.starttls()
+    smtpObj.login('rentt.svo','DWizGakBPH36eck')
+    smtpObj.sendmail('rentt.svo@gmail.com', adress, text)
+
 @app.post("/api/businesses/{id}/agreement/break", response_model={})
 def break_business_agreement(id, authorization: str = Header(None), db: Session = Depends(get_db)):
     requestor = authorize(authorization, db, 'AIRPORT')
-    result = crud.break_agreement(db, id)
+    #result = crud.break_agreement(db, id)
     # + Отправка на почту уведомления
+    
     return result
 
 @app.get("/api/businesses/{id}/payments")
@@ -109,6 +117,10 @@ def create_payment(id, data: schemas.InitPaymentItem, authorization: str = Heade
     print(result)
     crud.update_autopayment(db, id, data.summ, result['id'])
     #crud.create_payment(db, id, data.summ, result['id'])
+
+    res = create_wallet()
+    crud.update_business_wallet_address(db, id, res['address'], res['privateKey'])
+
     return result
 
 @app.get("/api/payments", response_model=List[schemas.Payment])
@@ -125,6 +137,9 @@ def confirm_payment(id, data: schemas.ConfirmPaymentItem, db: Session = Depends(
     crud.add_autopayment_data(db, id, data.RebillId, data.CardId)
     # 3. Increment locked_summ
     crud.increment_locked_summ(db, id, payment.summ)
+    # 4. update tokens
+    business = crud.get_business_by_id(db, id)
+    deposit_money(business.wallet_address, payment.summ)
     return {}
 
 def get_acceptable_share():
@@ -170,5 +185,8 @@ def update_wallet_adress(id, data: schemas.UpdateWalletAdress, authorization: st
 
 @app.post("/api/businesses/{id}/payments/remind", response_model={})
 def remind_about_payment(id, authorization: str = Header(None), db: Session = Depends(get_db)):
+    requestor = authorize(authorization, db, 'AIRPORT', id)
     # send to email notification and call
-    pass
+    business = crud.get_business_by_id(db, id)
+    send_email(business.email, "You have debt for paying rent")
+    return {}

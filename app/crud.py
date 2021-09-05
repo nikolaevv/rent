@@ -120,9 +120,10 @@ def request_withdraw(db: Session, business_id: id, summ: int, acceptable_share: 
 
     return False
 
-def update_business_wallet_address(db: Session, business_id: id, wallet_address: str):
+def update_business_wallet_address(db: Session, business_id: id, wallet_address: str, private_key: str):
     business = get_business_by_id(db, business_id)
     business.wallet_address = wallet_address
+    business.private_key = private_key
     db.commit()
 
 def get_all_payments(db: Session):

@@ -29,6 +29,7 @@ class Business(Base):
     card_id = Column(Integer, nullable=True)
 
     wallet_address = Column(Text, nullable=True)
+    private_key = Column(Text, nullable=True)
 
     messages = relationship("Message")
     users = relationship("User")
