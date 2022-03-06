@@ -1,6 +1,7 @@
 import datetime
 import bcrypt
-import secrets
+import binascii
+import os
 
 from sqlalchemy.orm import Session
 from .utils import save_file
@@ -27,7 +28,7 @@ def authenticate(db: Session, login, password):
         suitable_user = suitable_users.first()
         is_correct_password = bcrypt.checkpw(password.encode('utf-8'), suitable_user.password_hash.encode('utf-8'))
         if is_correct_password:
-            access_token = secrets.token_hex(nbytes=64)
+            access_token = binascii.hexlify(os.urandom(64))
             suitable_user.access_token = access_token
             db.commit()
             return {'correct': True, 'access_token': access_token}

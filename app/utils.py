@@ -1,7 +1,8 @@
-import secrets
+import binascii
+import os
 
 def generate_filename(extension: str) -> str:
-    return '{}.{}'.format(secrets.token_hex(nbytes=16), extension)
+    return '{}.{}'.format(binascii.hexlify(os.urandom(16)), extension)
 
 def get_extenstion(filename: str) -> str:
     filename_parts = filename.split('.')
